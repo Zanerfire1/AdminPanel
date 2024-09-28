@@ -1,6 +1,7 @@
 # WPF Admin Dashboard UI Design
 
-![Dashboard Preview](./path_to_image.png) <!-- Replace with actual image path -->
+<img src="https://github.com/user-attachments/assets/c85c5d7d-ff5b-4f25-a6ee-77631be68bb7" alt="Dashboard Preview" width="100%" height="auto">
+
 
 This project is a sleek and modern WPF Admin Dashboard built with C#. It includes interactive charts, icons, and a clean user interface to help you manage data efficiently.
 
@@ -42,7 +43,3 @@ To build and run this project, ensure you have the following installed:
 
 ## Usage
 This dashboard template can be customized according to your needs. You can add new pages, charts, or modify the design layout easily through the XAML files.
-
-## Screenshot
-
-![Screenshot](./path_to_image.png) <!-- Replace with an actual image of your dashboard -->
