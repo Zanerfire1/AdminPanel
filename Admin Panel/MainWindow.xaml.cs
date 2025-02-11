@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using FinanseService.Helpers;
+
 
 namespace Admin_Panel
 {
@@ -23,7 +25,25 @@ namespace Admin_Panel
         public MainWindow()
         {
             InitializeComponent();
+            LoadDashboardData();
         }
+
+        private void LoadDashboardData()
+        {
+            try
+            {
+                // Загружаем количество пользователей
+                TotalUsersCard.Number = DatabaseHelper.GetTotalUsers().ToString();
+
+                // Загружаем средний баланс
+                TotalOrdersCard.Number = DatabaseHelper.GetAverageBalance().ToString("N2");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка загрузки данных: " + ex.Message);
+            }
+        }
+
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {

@@ -150,8 +150,25 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <uc:InfoCard Grid.Column="0" Title="Total Views" Number="654,258" Icon="Eye" Background1="#827bff" Background2="#d9b5ff" EllipseBackground1="#b298fd" EllipseBackground2="#e4bbff"/>
-                    <uc:InfoCard Grid.Column="1" Title="Total Orders" Number="123,586" Icon="ShoppingCart" Background1="#fd8a87" Background2="#f3ab92" EllipseBackground1="#fbd5a8" EllipseBackground2="#fdb89b"/>
+                   <uc:InfoCard x:Name="TotalUsersCard"
+                                Grid.Column="0"
+                                Title="Total Users"
+                                Number="Загрузка..."
+                                Icon="Users"
+                                Background1="#827bff"
+                                Background2="#d9b5ff"
+                                EllipseBackground1="#b298fd"
+                                EllipseBackground2="#e4bbff"/>
+
+                    <uc:InfoCard x:Name="TotalOrdersCard"
+                                 Grid.Column="1"
+                                 Title="Avg Balance"
+                                 Number="Загрузка..."
+                                 Icon="ShoppingCart"
+                                 Background1="#fd8a87"
+                                 Background2="#f3ab92"
+                                 EllipseBackground1="#fbd5a8"
+                                 EllipseBackground2="#fdb89b"/>
                     <uc:InfoCard Grid.Column="2" Title="Total Revenue" Number="654,258" Icon="Coins" Background1="#fc84cb" Background2="#fc8fae" EllipseBackground1="#fc8fae" EllipseBackground2="#ffabe6"/>
                 </Grid>
 
@@ -228,6 +245,8 @@
                                         </lvc:Axis.Separator>
                                     </lvc:Axis>
                                 </lvc:CartesianChart.AxisY>
+
+
 
                                 <lvc:CartesianChart.Series>
                                     <lvc:LineSeries Stroke="#ada4fd" StrokeThickness="2" PointGeometrySize="0" Values="20000, 17000, 30000, 14000, 25000, 40000">
