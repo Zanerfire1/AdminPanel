@@ -182,6 +182,10 @@ namespace Admin_Panel.Helpers
             return users;
         }
 
+        
+
+
+
         public static bool UserExists(string username, string email)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -195,7 +199,7 @@ namespace Admin_Panel.Helpers
                     command.Parameters.AddWithValue("@email", email);
 
                     int count = (int)command.ExecuteScalar();
-                    return count > 0; // true, если есть совпадение
+                    return count > 0; 
                 }
             }
         }
@@ -219,44 +223,6 @@ namespace Admin_Panel.Helpers
             }
         }
 
-
-
-
-        //public static List<User> GetUsers(string searchQuery, int page, int pageSize)
-        //{
-        //    var users = new List<User>();
-
-        //    using (SqlConnection connection = new SqlConnection(ConnectionString))
-        //    {
-        //        connection.Open();
-        //        string query = @"SELECT id, username, email FROM users 
-        //                 WHERE username LIKE @searchQuery 
-        //                 ORDER BY id 
-        //                 OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
-
-        //        using (var command = new SqlCommand(query, connection))
-        //        {
-        //            command.Parameters.AddWithValue("@searchQuery", $"%{searchQuery}%");
-        //            command.Parameters.AddWithValue("@offset", (page - 1) * pageSize);
-        //            command.Parameters.AddWithValue("@pageSize", pageSize);
-
-        //            using (var reader = command.ExecuteReader())
-        //            {
-        //                while (reader.Read())
-        //                {
-        //                    users.Add(new User
-        //                    {
-        //                        Id = reader.GetInt32(0),
-        //                        Username = reader.GetString(1),
-        //                        Email = reader.GetString(2)
-        //                    });
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return users;
-        //}
 
         public static int GetUsersCount(string searchQuery)
         {

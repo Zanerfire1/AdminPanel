@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Admin_Panel.Helpers;
+using Admin_Panel.User_Controls;
 
 namespace Admin_Panel
 {
@@ -28,6 +29,7 @@ namespace Admin_Panel
             try
             {
                 string timeOfDayGreeting = GetTimeOfDayGreeting();
+
 
                 string adminName = DatabaseHelper.GetAdminNameById(AdminId);
                 string initials = DatabaseHelper.GetAdminInitials(AdminId);
@@ -128,8 +130,10 @@ namespace Admin_Panel
             if (addUserWindow.ShowDialog() == true)
             {
                 LoadUsers();
+                CustomMessageBox.Show("Успех", "Пользователь успешно добавлен.", isConfirmation: false);
             }
         }
+
 
         // Редактирование пользователя
         private void EditUserButton_Click(object sender, RoutedEventArgs e)
@@ -140,22 +144,23 @@ namespace Admin_Panel
                 if (editUserWindow.ShowDialog() == true)
                 {
                     LoadUsers();
+                    CustomMessageBox.Show("Успех", "Пользователь успешно обновлён.", isConfirmation: false);
                 }
             }
             else
             {
-                MessageBox.Show("Выберите пользователя для редактирования.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                CustomMessageBox.Show("Внимание", "Выберите пользователя для редактирования.", isConfirmation: false);
             }
         }
+
 
 
         private void DeleteUserButton_Click(object sender, RoutedEventArgs e)
         {
             if (UsersDataGrid.SelectedItem is User selectedUser)
             {
-                var result = MessageBox.Show($"Вы уверены, что хотите удалить пользователя {selectedUser.Username}?",
-                                             "Подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.Yes)
+                bool result = CustomMessageBox.Show("Подтверждение", $"Вы уверены, что хотите удалить пользователя {selectedUser.Username}?");
+                if (result)
                 {
                     try
                     {
@@ -164,15 +169,18 @@ namespace Admin_Panel
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        CustomMessageBox.Show("Ошибка", $"Ошибка удаления: {ex.Message}", isConfirmation: false);
                     }
                 }
             }
             else
             {
-                MessageBox.Show("Выберите пользователя для удаления.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                CustomMessageBox.Show("Внимание", "Выберите пользователя для удаления.", isConfirmation: false);
             }
         }
+
+
+
 
         // Поиск и фильтрация
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -185,14 +193,30 @@ namespace Admin_Panel
             try
             {
                 var query = SearchTextBox.Text.Trim().ToLower();
+
+                // Преобразуем запрос в число для поиска по Id, если это возможно
+                int? idQuery = null;
+                if (int.TryParse(query, out int id))
+                {
+                    idQuery = id;
+                }
+
                 var filteredUsers = DatabaseHelper.GetUsers()
-                    .Where(u => u.Username.ToLower().Contains(query) || u.Email.ToLower().Contains(query))
-                    .ToList();
+                    .Where(u =>
+                        (u.Username.ToLower().Contains(query) ||
+                        u.Email.ToLower().Contains(query) ||
+                        (idQuery.HasValue && u.Id == idQuery.Value)) // Фильтрация по Id
+                    ).ToList();
 
                 totalUsers = filteredUsers.Count;
+
+                // Пагинация
                 var paginatedUsers = filteredUsers.Skip((currentPage - 1) * PageSize).Take(PageSize).ToList();
 
+                // Обновление источника данных в таблице
                 UsersDataGrid.ItemsSource = paginatedUsers;
+
+                // Обновление пагинации
                 UpdatePagination();
             }
             catch (Exception ex)
@@ -200,7 +224,8 @@ namespace Admin_Panel
                 MessageBox.Show($"Ошибка поиска: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
- 
+
+
 
         private void HomeButton_Click(object sender, RoutedEventArgs e)
         {

@@ -12,9 +12,8 @@ namespace Admin_Panel
         public string Username { get; set; }
         public string Email { get; set; }
         public decimal CurrentBalance { get; set; }
-
         public string PasswordHash { get; set; }
-
         public DateTime CreatedAt { get; set; }
+        public DateTime LastLogin { get; set; }
     }
 }

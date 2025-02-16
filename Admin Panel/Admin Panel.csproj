@@ -83,6 +83,9 @@
     <Compile Include="EditUserWindow.xaml.cs">
       <DependentUpon>EditUserWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="User Controls\CustomMessageBox.xaml.cs">
+      <DependentUpon>CustomMessageBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="User.cs" />
     <Compile Include="Helpers\DatabaseHelper.cs" />
     <Compile Include="Helpers\NavigationHelper.cs" />
@@ -122,6 +125,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="User Controls\CustomMessageBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="User Controls\InfoCard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
