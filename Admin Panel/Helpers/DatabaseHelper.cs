@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Admin_Panel.Helpers
 {
@@ -152,10 +154,244 @@ namespace Admin_Panel.Helpers
         }
 
 
+        public static List<User> GetUsers()
+        {
+            List<User> users = new List<User>();
+            string query = "SELECT id, username, email, current_balance, created_at, password_hash FROM users";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    users.Add(new User
+                    {
+                        Id = reader.GetInt32(0),
+                        Username = reader.GetString(1),
+                        Email = reader.GetString(2),
+                        CurrentBalance = reader.GetDecimal(3),
+                        CreatedAt = reader.GetDateTime(4),
+                        PasswordHash = reader.GetString(5)
+                    });
+                }
+            }
+
+            return users;
+        }
+
+        public static bool UserExists(string username, string email)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "SELECT COUNT(*) FROM users WHERE username = @username OR email = @email";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@username", username);
+                    command.Parameters.AddWithValue("@email", email);
+
+                    int count = (int)command.ExecuteScalar();
+                    return count > 0; // true, если есть совпадение
+                }
+            }
+        }
+
+        public static bool EditUserExists(string username, string email, int userId)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "SELECT COUNT(*) FROM users WHERE (username = @username OR email = @email) AND id != @id";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@username", username);
+                    command.Parameters.AddWithValue("@email", email);
+                    command.Parameters.AddWithValue("@id", userId);
+
+                    int count = (int)command.ExecuteScalar();
+                    return count > 0; // true, если дубликат найден
+                }
+            }
+        }
 
 
 
 
+        //public static List<User> GetUsers(string searchQuery, int page, int pageSize)
+        //{
+        //    var users = new List<User>();
+
+        //    using (SqlConnection connection = new SqlConnection(ConnectionString))
+        //    {
+        //        connection.Open();
+        //        string query = @"SELECT id, username, email FROM users 
+        //                 WHERE username LIKE @searchQuery 
+        //                 ORDER BY id 
+        //                 OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
+
+        //        using (var command = new SqlCommand(query, connection))
+        //        {
+        //            command.Parameters.AddWithValue("@searchQuery", $"%{searchQuery}%");
+        //            command.Parameters.AddWithValue("@offset", (page - 1) * pageSize);
+        //            command.Parameters.AddWithValue("@pageSize", pageSize);
+
+        //            using (var reader = command.ExecuteReader())
+        //            {
+        //                while (reader.Read())
+        //                {
+        //                    users.Add(new User
+        //                    {
+        //                        Id = reader.GetInt32(0),
+        //                        Username = reader.GetString(1),
+        //                        Email = reader.GetString(2)
+        //                    });
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return users;
+        //}
+
+        public static int GetUsersCount(string searchQuery)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "SELECT COUNT(*) FROM users WHERE username LIKE @searchQuery";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@searchQuery", $"%{searchQuery}%");
+                    return (int)command.ExecuteScalar();
+                }
+            }
+        }
+
+        public static void AddUser(string username, string email, string passwordHash)
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = @"INSERT INTO users (username, email, password_hash, created_at, last_login)
+                         VALUES (@Username, @Email, @PasswordHash, GETDATE(), NULL)";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.Parameters.AddWithValue("@Email", email);
+                    command.Parameters.AddWithValue("@PasswordHash", passwordHash);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+
+        public static void UpdateUser(User user, string newPassword = null)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                string query = newPassword != null
+                    ? "UPDATE users SET username = @username, email = @email, password_hash = @passwordHash WHERE id = @id"
+                    : "UPDATE users SET username = @username, email = @email WHERE id = @id";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@username", user.Username);
+                    command.Parameters.AddWithValue("@email", user.Email);
+                    command.Parameters.AddWithValue("@id", user.Id);
+
+                    if (newPassword != null)
+                    {
+                        string passwordHash = ComputeSha256Hash(newPassword);
+                        command.Parameters.AddWithValue("@passwordHash", passwordHash);
+                    }
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Метод для вычисления SHA-256 хэша
+        private static string ComputeSha256Hash(string rawData)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+                StringBuilder builder = new StringBuilder();
+                foreach (var b in bytes)
+                {
+                    builder.Append(b.ToString("x2"));
+                }
+                return builder.ToString();
+            }
+        }
+
+
+        public static void DeleteUser(int userId)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string query = @"
+                    DELETE FROM expenses WHERE user_id = @id;
+                    DELETE FROM incomes WHERE user_id = @id;
+                    DELETE FROM instant_expenses WHERE user_id = @id;
+                    DELETE FROM financial_operations WHERE user_id = @id;
+                    DELETE FROM user_sessions WHERE user_id = @id;
+                    DELETE FROM user_values WHERE user_id = @id;
+                    DELETE FROM users WHERE id = @id;";
+
+                        using (var command = new SqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@id", userId);
+                            command.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit(); 
+                    }
+                    catch
+                    {
+                        transaction.Rollback(); 
+                        throw; 
+                    }
+                }
+            }
+        }
+
+
+        public static void InsertUser(string username, string email, string password, decimal balance)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                string query = @"
+            INSERT INTO users (username, email, password_hash, current_balance, created_at, last_login) 
+            VALUES (@Username, @Email, HASHBYTES('SHA2_256', @Password), @Balance, GETDATE(), GETDATE());";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.Parameters.AddWithValue("@Email", email);
+                    command.Parameters.AddWithValue("@Password", password);
+                    command.Parameters.AddWithValue("@Balance", balance);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
 
     }
 }

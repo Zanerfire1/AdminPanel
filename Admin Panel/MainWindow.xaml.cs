@@ -138,9 +138,18 @@ namespace Admin_Panel
             NavigationHelper.NavigateToMainWindow(AdminId, this);
         }
 
+        private void UsersButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToUsersWindow(AdminId, this);
+        }
+
+
+
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.Logout();
         }
+
+
     }
 }

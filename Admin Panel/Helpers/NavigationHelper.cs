@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace Admin_Panel.Helpers
 {
@@ -18,13 +19,13 @@ namespace Admin_Panel.Helpers
 
         public static void Logout()
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
                 LoginWindow loginWindow = new LoginWindow();
                 loginWindow.Show();
 
                 
-                foreach (Window window in Application.Current.Windows)
+                foreach (Window window in System.Windows.Application.Current.Windows)
                 {
                     if (window != loginWindow)
                     {
@@ -32,9 +33,21 @@ namespace Admin_Panel.Helpers
                     }
                 }
 
-                Application.Current.MainWindow = loginWindow;
+                System.Windows.Application.Current.MainWindow = loginWindow;
             });
         }
+
+        public static void NavigateToUsersWindow(int adminId, Window currentWindow)
+        {
+            UsersWindow usersWindow = new UsersWindow(adminId);
+            usersWindow.Show();
+            currentWindow.Close();
+        }
+
+
+
+
+
 
 
     }
