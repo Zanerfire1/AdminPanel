@@ -152,6 +152,8 @@
                             </Border>
                         </StackPanel>
 
+                        
+
 
 
                         <!-- Кнопка "Добавить" -->
@@ -301,6 +303,10 @@
                                         </Style>
                                     </Button.Style>
                                 </Button>
+
+                                <Button Content="Показать операции" Click="ShowTransactions_Click"
+        Background="#FFB71C1C" Foreground="White" Padding="10,5"/>
+
 
                             </StackPanel>
                         </StackPanel>

@@ -42,7 +42,6 @@ namespace Admin_Panel
 
                 DatabaseHelper.AddUser(username, email, passwordHash);
 
-                MessageBox.Show("Пользователь успешно добавлен!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 DialogResult = true; 
                 Close();
             }

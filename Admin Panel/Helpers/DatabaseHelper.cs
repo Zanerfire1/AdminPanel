@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
@@ -355,6 +356,87 @@ namespace Admin_Panel.Helpers
                     command.Parameters.AddWithValue("@Balance", balance);
 
                     command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // 1. Список операций для всех счетов
+        public static DataTable GetAllTransactions()
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = @"
+                    SELECT fo.id, fo.operation_name, fo.operation_type, fo.amount, fo.operation_date, u.username
+                    FROM financial_operations fo
+                    JOIN users u ON fo.user_id = u.id
+                    ORDER BY fo.operation_date DESC;";
+                using (var command = new SqlCommand(query, connection))
+                using (var adapter = new SqlDataAdapter(command))
+                {
+                    var dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+                    return dataTable;
+                }
+            }
+        }
+
+        // 2. Остаток средств на каждом счете
+        public static DataTable GetAccountBalances()
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = @"
+                    SELECT id, username, current_balance
+                    FROM users
+                    ORDER BY current_balance DESC;";
+                using (var command = new SqlCommand(query, connection))
+                using (var adapter = new SqlDataAdapter(command))
+                {
+                    var dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+                    return dataTable;
+                }
+            }
+        }
+
+        // 3. Счета с наибольшим количеством транзакций
+        public static DataTable GetTopAccountsByTransactions()
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = @"
+                    SELECT u.id, u.username, COUNT(fo.id) AS transaction_count
+                    FROM financial_operations fo
+                    JOIN users u ON fo.user_id = u.id
+                    GROUP BY u.id, u.username
+                    ORDER BY transaction_count DESC;";
+                using (var command = new SqlCommand(query, connection))
+                using (var adapter = new SqlDataAdapter(command))
+                {
+                    var dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+                    return dataTable;
+                }
+            }
+        }
+
+        // 4. Общий оборот средств за текущий месяц
+        public static decimal GetMonthlyTurnover()
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = @"
+                    SELECT SUM(amount) 
+                    FROM financial_operations
+                    WHERE MONTH(operation_date) = MONTH(GETDATE()) 
+                    AND YEAR(operation_date) = YEAR(GETDATE());";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    return Convert.ToDecimal(command.ExecuteScalar() ?? 0);
                 }
             }
         }

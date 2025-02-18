@@ -34,6 +34,7 @@ namespace Admin_Panel
                 string adminName = DatabaseHelper.GetAdminNameById(AdminId);
                 string initials = DatabaseHelper.GetAdminInitials(AdminId);
 
+
                 AdminGreetingTextBlock.Text = $"{timeOfDayGreeting}, {adminName}";
                 UsernameTextBlock.Text = adminName;
                 InitialsTextBlock.Text = initials;
@@ -225,6 +226,11 @@ namespace Admin_Panel
             }
         }
 
+        private void ShowTransactions_Click(object sender, RoutedEventArgs e)
+        {
+            var transactionsWindow = new TransactionsWindow();
+            transactionsWindow.Show();
+        }
 
 
         private void HomeButton_Click(object sender, RoutedEventArgs e)

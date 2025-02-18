@@ -119,6 +119,11 @@ namespace Admin_Panel
             }
         }
 
+        private void TotalUsersCard_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToUsersWindow(AdminId, this);
+        }
+
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
