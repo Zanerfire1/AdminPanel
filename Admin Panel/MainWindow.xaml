@@ -67,7 +67,7 @@
                 </Button>
 
 
-                <Button Style="{StaticResource menuButton}">
+                <Button Click="SettingButton_Click" Style="{StaticResource menuButton}">
                     <StackPanel Orientation="Horizontal">
                         <fa:IconImage Icon="Cog" Style="{StaticResource menuButtonIcon}"/>
                         <TextBlock Text="Settings" Style="{StaticResource menuButtonText}"/>

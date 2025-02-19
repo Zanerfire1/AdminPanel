@@ -78,6 +78,36 @@ namespace Admin_Panel.Helpers
             return newUsers;
         }
 
+        public static Admin GetAdminById(int adminId)
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "SELECT id, username, email FROM admins WHERE id = @id";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id", adminId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Admin
+                            {
+                                Id = reader.GetInt32(0),
+                                Username = reader.GetString(1),
+                                Email = reader.GetString(2)
+                            };
+                        }
+                    }
+                }
+            }
+
+            throw new Exception("Администратор с таким ID не найден.");
+        }
+
+
 
 
 
@@ -437,6 +467,53 @@ namespace Admin_Panel.Helpers
                 using (var command = new SqlCommand(query, connection))
                 {
                     return Convert.ToDecimal(command.ExecuteScalar() ?? 0);
+                }
+            }
+        }
+
+        public static void UpdateAdmin(Admin admin, string newPassword = null)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                string query = newPassword != null
+                    ? "UPDATE admins SET username = @username, email = @email, password_hash = @passwordHash WHERE id = @id"
+                    : "UPDATE admins SET username = @username, email = @email WHERE id = @id";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@username", admin.Username);
+                    command.Parameters.AddWithValue("@email", admin.Email);
+                    command.Parameters.AddWithValue("@id", admin.Id);
+
+                    if (newPassword != null)
+                    {
+                        string passwordHash = ComputeSha256Hash(newPassword);
+                        command.Parameters.AddWithValue("@passwordHash", passwordHash);
+                    }
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Метод проверки существования администратора с такими же username или email (исключая текущего по id)
+        public static bool AdminExists(string username, string email, int excludeId)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT COUNT(*) FROM admins WHERE (username = @username OR email = @email) AND id != @id";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@username", username);
+                    command.Parameters.AddWithValue("@email", email);
+                    command.Parameters.AddWithValue("@id", excludeId);
+
+                    return (int)command.ExecuteScalar() > 0;
                 }
             }
         }

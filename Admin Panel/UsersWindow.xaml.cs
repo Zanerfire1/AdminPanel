@@ -226,11 +226,7 @@ namespace Admin_Panel
             }
         }
 
-        private void ShowTransactions_Click(object sender, RoutedEventArgs e)
-        {
-            var transactionsWindow = new TransactionsWindow();
-            transactionsWindow.Show();
-        }
+
 
 
         private void HomeButton_Click(object sender, RoutedEventArgs e)
@@ -242,6 +238,13 @@ namespace Admin_Panel
         {
             NavigationHelper.Logout();
         }
+
+        private void SettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToSettingWindow(AdminId, this);
+        }
+
+
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {

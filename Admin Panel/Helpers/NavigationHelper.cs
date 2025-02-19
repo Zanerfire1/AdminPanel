@@ -24,7 +24,7 @@ namespace Admin_Panel.Helpers
                 LoginWindow loginWindow = new LoginWindow();
                 loginWindow.Show();
 
-                
+
                 foreach (Window window in System.Windows.Application.Current.Windows)
                 {
                     if (window != loginWindow)
@@ -44,11 +44,12 @@ namespace Admin_Panel.Helpers
             currentWindow.Close();
         }
 
-
-
-
-
-
-
+        public static void NavigateToSettingWindow(int adminId, Window currentWindow)
+        {
+            Admin admin = DatabaseHelper.GetAdminById(adminId);
+            SettingWindow settingWindow = new SettingWindow(admin);
+            settingWindow.Show();
+            currentWindow.Close();
+        }
     }
 }

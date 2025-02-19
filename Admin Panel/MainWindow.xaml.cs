@@ -148,6 +148,11 @@ namespace Admin_Panel
             NavigationHelper.NavigateToUsersWindow(AdminId, this);
         }
 
+        private void SettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToSettingWindow(AdminId, this);
+        }
+
 
 
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
