@@ -141,7 +141,47 @@ namespace Admin_Panel
             }
         }
 
-       
+        private void SaveAdminButton_Click1(object sender, RoutedEventArgs e)
+        {
+            string username = AdminUsernameTextBox.Text.Trim();
+            string email = AdminEmailTextBox.Text.Trim();
+            string password = AdminPasswordBox.Password.Trim();
+
+            AdminErrorTextBlock.Visibility = Visibility.Collapsed;
+
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            {
+                ShowAdminError("Имя пользователя, email и пароль обязательны");
+                return;
+            }
+
+            try
+            {
+                // Проверяем, существует ли администратор с таким же логином или email
+                if (DatabaseHelper.AdminExists1(username, email))
+                {
+                    ShowAdminError("Логин или email уже заняты");
+                    return;
+                }
+
+                // Хэшируем пароль
+                string passwordHash = DatabaseHelper.ComputeSha256Hash(password);
+
+                // Добавляем администратора
+                DatabaseHelper.AddAdmin(username, email, passwordHash);
+
+                // Обновляем данные и скрываем окно
+                ReloadWindow();
+                HideAddAdminGrid();
+            }
+            catch (Exception ex)
+            {
+                ShowAdminError($"Ошибка при добавлении: {ex.Message}");
+            }
+        }
+
+
+
         private void ReloadWindow()
         {
             Admin updatedAdmin = DatabaseHelper.GetAdminById(_admin.Id);
@@ -150,6 +190,9 @@ namespace Admin_Panel
 
             Close();
         }
+
+        
+
 
 
         private void ShowError(string message)
@@ -162,5 +205,34 @@ namespace Admin_Panel
         {
             ReloadWindow();
         }
+
+        private void ShowAddAdminGrid()
+        {
+            AddAdminGrid.Visibility = Visibility.Visible;
+        }
+
+        private void HideAddAdminGrid()
+        {
+            AddAdminGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void CancelAdminButton_Click(object sender, RoutedEventArgs e)
+        {
+            HideAddAdminGrid();
+        }
+
+        private void ShowAddAdminButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowAddAdminGrid();
+        }
+
+        private void ShowAdminError(string message)
+        {
+            AdminErrorTextBlock.Text = message;
+            AdminErrorTextBlock.Visibility = Visibility.Visible;
+        }
+
+
+
     }
 }

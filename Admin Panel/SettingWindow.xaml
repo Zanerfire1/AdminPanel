@@ -36,7 +36,7 @@
                                 <GradientStop Color="#d3b7ff" Offset="1"/>
                             </LinearGradientBrush>
                         </Border.Background>
-                        <TextBlock x:Name="InitialsTextBlock" Text="??" Margin="0 0 0 2" Foreground="White"
+                        <TextBlock x:Name="InitialsTextBlock" Text="??" Foreground="White"
                                FontSize="22" FontWeight="Bold" TextAlignment="Center"
                                VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Border>
@@ -99,10 +99,10 @@
 
                 <!-- Кнопка закрытия -->
                 <Button Width="30" Height="30" FontSize="14"
-                Background="Transparent" Foreground="White" BorderThickness="0"
-                HorizontalAlignment="Right" VerticalAlignment="Top"
-                Click="CloseButton_Click"
-                Cursor="Hand">
+                        Background="Transparent" Foreground="White" BorderThickness="0"
+                        HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Click="CloseButton_Click"
+                        Cursor="Hand">  
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Template">
@@ -125,55 +125,66 @@
                     </Button.Style>
                 </Button>
 
-                <!-- Приветствие и данные администратора -->
-                <!-- Приветствие (вынесено из StackPanel) -->
+
+
                 <TextBlock Name="AdminGreetingTextBlock" Text="Good Morning, Admin"
                            FontSize="26" Foreground="#ccd7ff" Margin="50,35,0,0"
-                           VerticalAlignment="Top"/>    
+                           VerticalAlignment="Top"/>
 
-                <!-- Панель с информацией об администраторе -->
 
-                <Border CornerRadius="20" Margin="50,110,40,0">
-                    <!-- Градиентный фон -->
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 2">
-                            <GradientStop Color="#243771" Offset="0"/>
-                            <GradientStop Color="#1C2A56" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
 
-                    <Grid>
-                        <!-- Декоративный эллипс -->
-                        <Border CornerRadius="20" Width="100" Height="96" Margin="0 20 20 0" HorizontalAlignment="Right" VerticalAlignment="top">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 2">
-                                    <GradientStop Color="#7f7cf1" Offset="0"/>
-                                    <GradientStop Color="#d3b7ff" Offset="1"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <TextBlock x:Name="InitialsTextBlock1" Margin="0 0 0 5" Text="??" Foreground="White"
-                               FontSize="57" FontWeight="Bold" TextAlignment="Center"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        </Border>
+                <Grid Margin="50,110,40,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- Первая карточка -->
+                        <RowDefinition Height="40"/>
+                        <!-- Отступ между карточками -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Вторая карточка -->
+                    </Grid.RowDefinitions>
 
-                        <!-- Данные аккаунта -->
-                        <StackPanel VerticalAlignment="Top" Margin="30, 20,20,20">
-                            <TextBlock Text="Данные аккаунта:" Foreground="#FFBCCAF1" FontSize="20" Margin="0,0,0,20"/>
+                    <!-- Первая карточка -->
+                    <Border CornerRadius="20" Grid.Row="0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 2">
+                                <GradientStop Color="#243771" Offset="0"/>
+                                <GradientStop Color="#1C2A56" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
 
-                            <TextBlock Text="ID:" Foreground="#FF707DB2" FontSize="18" Margin="10,0,0,0"/>
-                            <TextBlock x:Name="AdminIdTextBlock" Foreground="#FFBCCAF1" FontSize="18" Margin="10,0,0,10"/>
+                        <Grid>
+                            <!-- Иконка с инициалами -->
+                            <Border CornerRadius="20" Width="100" Height="96" Margin="0 20 20 0" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 2">
+                                        <GradientStop Color="#7f7cf1" Offset="0"/>
+                                        <GradientStop Color="#d3b7ff" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <TextBlock x:Name="InitialsTextBlock1" Text="??" Foreground="White"
+                           FontSize="57" FontWeight="Bold" TextAlignment="Center"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Border>
 
-                            <TextBlock Text="Ваше имя пользователя:" Foreground="#FF707DB2" FontSize="18" Margin="10,0,0,0"/>
-                            <TextBlock x:Name="AdminNameTextBlock" Foreground="#FFBCCAF1" FontSize="18" Margin="10,0,0,10"/>
+                            <!-- Данные аккаунта -->
+                            <StackPanel VerticalAlignment="Top" Margin="30, 20,20,20">
+                                <TextBlock Text="Данные аккаунта:" Foreground="#FFBCCAF1" FontSize="20" Margin="0,0,0,20"/>
 
-                            <TextBlock Text="Email:" Foreground="#FF707DB2" FontSize="18" Margin="10,0,0,0"/>
-                            <TextBlock x:Name="AdminEmailTextBlock" Foreground="#FFBCCAF1" FontSize="18" Margin="10,0,0,20"/>
+                                <TextBlock Text="ID:" Foreground="#FF707DB2" FontSize="18" Margin="10,0,0,0"/>
+                                <TextBlock x:Name="AdminIdTextBlock" Foreground="#FFBCCAF1" FontSize="18" Margin="10,0,0,10"/>
+
+                                <TextBlock Text="Ваше имя пользователя:" Foreground="#FF707DB2" FontSize="18" Margin="10,0,0,0"/>
+                                <TextBlock x:Name="AdminNameTextBlock" Foreground="#FFBCCAF1" FontSize="18" Margin="10,0,0,10"/>
+
+                                <TextBlock Text="Email:" Foreground="#FF707DB2" FontSize="18" Margin="10,0,0,0"/>
+                                <TextBlock x:Name="AdminEmailTextBlock" Foreground="#FFBCCAF1" FontSize="18" Margin="10,0,0,0"/>
+                            </StackPanel>
 
                             <!-- Кнопка "Редактировать" -->
-                            <Button Content="Редактировать" HorizontalAlignment="Left" Width="150" Height="40"
-                                    Background="#495385" Foreground="#FFBCCAF1" FontSize="14"
-                                    FontWeight="Bold" BorderThickness="0" Cursor="Hand"
-                                    Click="ShowEditGrid_Click" Margin="0,0,0,0">   
+                            <Button Content="Редактировать" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                    Width="150" Height="40" Background="#495385" Foreground="#FFBCCAF1" FontSize="14"
+                    FontWeight="Bold" BorderThickness="0" Cursor="Hand"
+                    Click="ShowEditGrid_Click" Margin="0,0,20,20">
                                 <Button.Style>
                                     <Style TargetType="Button">
                                         <Setter Property="Template">
@@ -196,9 +207,54 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                        </StackPanel>
-                    </Grid>
-                </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Вторая карточка -->
+                    <Border CornerRadius="20" Grid.Row="2">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 2">
+                                <GradientStop Color="#243771" Offset="0"/>
+                                <GradientStop Color="#1C2A56" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+
+                        <Grid>
+                            <StackPanel VerticalAlignment="Top" Margin="30, 20,20,20">
+                                <TextBlock Text="Настройки:" Foreground="#FFBCCAF1" FontSize="20" Margin="0,0,0,20"/>
+
+                                <TextBlock Text="Добавить нового Администратора:" Foreground="#FFBCCAF1" FontSize="18" Margin="10,0,0,0"/>
+                            </StackPanel>
+
+                            <Button Content="Добавить" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                    Width="150" Height="40" Background="#495385" Foreground="#FFBCCAF1" FontSize="14"
+                                    FontWeight="Bold" BorderThickness="0" Cursor="Hand"
+                                    Click="ShowAddAdminButton_Click" Margin="0,0,20,20"> 
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="Border" CornerRadius="5" Background="#2F437F">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Border" Property="Background" Value="#5A6699"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter TargetName="Border" Property="Background" Value="#49527D"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
+                    </Border>
+                </Grid>
 
 
 
@@ -294,6 +350,97 @@
                         </StackPanel>
                     </Border>
                 </Grid>
+                
+
+                <Grid x:Name="AddAdminGrid" Visibility="Collapsed" Background="#80000000" 
+                      VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                      Grid.RowSpan="2" Panel.ZIndex="1">    
+
+                    <Border Width="420" Background="#2c386c" CornerRadius="15" Padding="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                        <StackPanel>
+                            <!-- Поле "Имя администратора" -->
+                            <TextBlock Text="Имя администратора" Foreground="#ccd7ff" FontSize="14" Margin="0,0,0,5"/>
+                            <Border Background="White" CornerRadius="5" Padding="2" Margin="0,0,0,10">
+                                <TextBox x:Name="AdminUsernameTextBox" Width="360" Height="30" Background="Transparent" BorderThickness="0"/>
+                            </Border>
+
+                            <!-- Поле "Email" -->
+                            <TextBlock Text="Email" Foreground="#ccd7ff" FontSize="14" Margin="0,0,0,5"/>
+                            <Border Background="White" CornerRadius="5" Padding="2" Margin="0,0,0,10">
+                                <TextBox x:Name="AdminEmailTextBox" Width="360" Height="30" Background="Transparent" BorderThickness="0"/>
+                            </Border>
+
+                            <!-- Поле "Пароль" -->
+                            <TextBlock Text="Пароль" Foreground="#ccd7ff" FontSize="14" Margin="0,0,0,5"/>
+                            <Border Background="White" CornerRadius="5" Padding="2" Margin="0,0,0,10">
+                                <PasswordBox x:Name="AdminPasswordBox" Width="360" Height="30" Background="Transparent" BorderThickness="0"/>
+                            </Border>
+
+                            <TextBlock x:Name="AdminErrorTextBlock" Text="" Foreground="Red" FontSize="12" Visibility="Collapsed" TextAlignment="Center" Margin="0,0,0,0"/>
+
+                            <!-- Кнопки "Сохранить" и "Отмена" -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                                <!-- Кнопка "Сохранить" -->
+                                <Button Content="Сохранить" Width="150" Height="40"
+                                        Background="#495385" Foreground="White" FontSize="14"
+                                        FontWeight="Bold" BorderThickness="0"
+                                        Cursor="Hand" Click="SaveAdminButton_Click1">    
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="5">
+                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="Border" Property="Background" Value="#5A6699"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter TargetName="Border" Property="Background" Value="#49527D"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- Кнопка "Отмена" -->
+                                <Button Content="Отмена" Width="150" Height="40" Margin="20,0,0,0"
+                                        Background="#495385" Foreground="White" FontSize="14"
+                                        FontWeight="Bold" BorderThickness="0"
+                                        Cursor="Hand" Click="CancelAdminButton_Click">  
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="5">
+                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="Border" Property="Background" Value="#5A6699"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter TargetName="Border" Property="Background" Value="#49527D"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
 
 
             </Grid>

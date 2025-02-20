@@ -317,7 +317,7 @@ namespace Admin_Panel.Helpers
         }
 
         // Метод для вычисления SHA-256 хэша
-        private static string ComputeSha256Hash(string rawData)
+        public static string ComputeSha256Hash(string rawData)
         {
             using (SHA256 sha256 = SHA256.Create())
             {
@@ -517,6 +517,39 @@ namespace Admin_Panel.Helpers
                 }
             }
         }
+
+        public static bool AdminExists1(string username, string email)
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                var query = "SELECT COUNT(*) FROM admins WHERE username = @Username OR email = @Email";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.Parameters.AddWithValue("@Email", email);
+                    return (int)command.ExecuteScalar() > 0;
+                }
+            }
+        }
+
+        public static void AddAdmin(string username, string email, string passwordHash)
+{
+    using (var connection = new SqlConnection(ConnectionString))
+    {
+        connection.Open();
+        var query = "INSERT INTO admins (username, email, password_hash, created_at) VALUES (@Username, @Email, @PasswordHash, GETDATE())";
+        using (var command = new SqlCommand(query, connection))
+        {
+            command.Parameters.AddWithValue("@Username", username);
+            command.Parameters.AddWithValue("@Email", email);
+            command.Parameters.AddWithValue("@PasswordHash", passwordHash);
+            command.ExecuteNonQuery();
+        }
+    }
+}
+
+
 
     }
 }
