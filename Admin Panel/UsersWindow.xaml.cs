@@ -234,6 +234,10 @@ namespace Admin_Panel
             NavigationHelper.NavigateToMainWindow(AdminId, this);
         }
 
+        private void CategoriesButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToCategoryWindow(AdminId, this);
+        }
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.Logout();
@@ -243,6 +247,7 @@ namespace Admin_Panel
         {
             NavigationHelper.NavigateToSettingWindow(AdminId, this);
         }
+
 
 
 

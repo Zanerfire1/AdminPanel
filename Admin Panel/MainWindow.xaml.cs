@@ -148,6 +148,11 @@ namespace Admin_Panel
             NavigationHelper.NavigateToUsersWindow(AdminId, this);
         }
 
+        private void CategoriesButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToCategoryWindow(AdminId, this);
+        }
+
         private void SettingButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.NavigateToSettingWindow(AdminId, this);

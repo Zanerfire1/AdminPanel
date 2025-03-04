@@ -72,6 +72,11 @@ namespace Admin_Panel
             NavigationHelper.NavigateToUsersWindow(_admin.Id, this);
         }
 
+        private void CategoriesButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToCategoryWindow(_admin.Id, this);
+        }
+
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.Logout();
@@ -205,6 +210,8 @@ namespace Admin_Panel
         {
             ReloadWindow();
         }
+
+
 
         private void ShowAddAdminGrid()
         {

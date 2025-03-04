@@ -534,20 +534,110 @@ namespace Admin_Panel.Helpers
         }
 
         public static void AddAdmin(string username, string email, string passwordHash)
-{
-    using (var connection = new SqlConnection(ConnectionString))
-    {
-        connection.Open();
-        var query = "INSERT INTO admins (username, email, password_hash, created_at) VALUES (@Username, @Email, @PasswordHash, GETDATE())";
-        using (var command = new SqlCommand(query, connection))
         {
-            command.Parameters.AddWithValue("@Username", username);
-            command.Parameters.AddWithValue("@Email", email);
-            command.Parameters.AddWithValue("@PasswordHash", passwordHash);
-            command.ExecuteNonQuery();
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                var query = "INSERT INTO admins (username, email, password_hash, created_at) VALUES (@Username, @Email, @PasswordHash, GETDATE())";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.Parameters.AddWithValue("@Email", email);
+                    command.Parameters.AddWithValue("@PasswordHash", passwordHash);
+                    command.ExecuteNonQuery();
+                }
+            }
         }
-    }
-}
+
+        public static List<Category> GetCategories()
+        {
+            List<Category> categories = new List<Category>();
+            string query = "SELECT id, category_name FROM operation_categories";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    categories.Add(new Category
+                    {
+                        Id = reader.GetInt32(0),
+                        CategoryName = reader.GetString(1)
+                    });
+                }
+            }
+
+            return categories;
+        }
+
+        public static void AddCategory(string categoryName)
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "INSERT INTO operation_categories (category_name) VALUES (@CategoryName)";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CategoryName", categoryName);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void UpdateCategory(Category category)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "UPDATE operation_categories SET category_name = @CategoryName WHERE id = @Id";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CategoryName", category.CategoryName);
+                    command.Parameters.AddWithValue("@Id", category.Id);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void DeleteCategory(int categoryId)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "DELETE FROM operation_categories WHERE id = @Id";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", categoryId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static bool CategoryExists(string categoryName, int excludeId = -1)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = excludeId == -1
+                    ? "SELECT COUNT(*) FROM operation_categories WHERE category_name = @CategoryName"
+                    : "SELECT COUNT(*) FROM operation_categories WHERE category_name = @CategoryName AND id != @Id";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CategoryName", categoryName);
+                    if (excludeId != -1)
+                        command.Parameters.AddWithValue("@Id", excludeId);
+
+                    return (int)command.ExecuteScalar() > 0;
+                }
+            }
+        }
 
 
 

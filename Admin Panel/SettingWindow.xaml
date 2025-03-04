@@ -64,6 +64,13 @@
                     </StackPanel>
                 </Button>
 
+                <Button Click="CategoriesButton_Click" Style="{StaticResource menuButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:IconImage Icon="List" Style="{StaticResource menuButtonIcon}"/>
+                        <TextBlock Text="Categories" Style="{StaticResource menuButtonText}"/>
+                    </StackPanel>
+                </Button>
+
                 <Button Style="{StaticResource menuButtonActive}">
                     <StackPanel Orientation="Horizontal">
                         <fa:IconImage Icon="Cog" Style="{StaticResource menuButtonIcon}"/>

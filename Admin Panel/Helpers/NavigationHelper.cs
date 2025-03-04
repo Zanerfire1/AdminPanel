@@ -51,5 +51,12 @@ namespace Admin_Panel.Helpers
             settingWindow.Show();
             currentWindow.Close();
         }
+
+        public static void NavigateToCategoryWindow(int adminId, Window currentWindow)
+        {
+            CategoriesWindow categoryWindow = new CategoriesWindow(adminId);
+            categoryWindow.Show();
+            currentWindow.Close();
+        }
     }
 }
