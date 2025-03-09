@@ -8,7 +8,7 @@ namespace Admin_Panel
 {
     public partial class LoginWindow : Window
     {
-        private const string ConnectionString = "Server=WIN-6OQEGBE24R9\\SQLEXPRESS;Database=Finances;Trusted_Connection=True;";
+        private const string ConnectionString = "Server=WIN-6OQEGBE24R9\\SQLEXPRESS;Database=Finances2;Trusted_Connection=True;";
 
         public LoginWindow()
         {

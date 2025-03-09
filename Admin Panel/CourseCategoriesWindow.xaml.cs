@@ -9,14 +9,14 @@ using Admin_Panel.User_Controls;
 
 namespace Admin_Panel
 {
-    public partial class CategoriesWindow : Window
+    public partial class CourseCategoriesWindow : Window
     {
         private int AdminId;
         private int currentPage = 1;
         private const int PageSize = 12;
         private int totalCategories;
 
-        public CategoriesWindow(int adminId)
+        public CourseCategoriesWindow(int adminId)
         {
             InitializeComponent();
             AdminId = adminId;
@@ -35,7 +35,7 @@ namespace Admin_Panel
                 AdminGreetingTextBlock.Text = $"{timeOfDayGreeting}, {adminName}";
                 UsernameTextBlock.Text = adminName;
                 InitialsTextBlock.Text = initials;
-                this.KeyDown += CategoriesWindow_KeyDown;
+                this.KeyDown += CourseCategoriesWindow_KeyDown;
             }
             catch (Exception ex)
             {
@@ -56,13 +56,13 @@ namespace Admin_Panel
         {
             try
             {
-                var categories = DatabaseHelper.GetCategories();
+                var categories = DatabaseHelper.GetCourseCategories();
                 totalCategories = categories.Count;
                 var paginatedCategories = categories.Skip((currentPage - 1) * PageSize).Take(PageSize).ToList();
 
-                CategoriesDataGrid.ItemsSource = null;
-                CategoriesDataGrid.Items.Clear();
-                CategoriesDataGrid.ItemsSource = paginatedCategories;
+                CourseCategoriesDataGrid.ItemsSource = null;
+                CourseCategoriesDataGrid.Items.Clear();
+                CourseCategoriesDataGrid.ItemsSource = paginatedCategories;
                 UpdatePagination();
             }
             catch (Exception ex)
@@ -96,7 +96,7 @@ namespace Admin_Panel
             }
         }
 
-        private void CategoriesWindow_KeyDown(object sender, KeyEventArgs e)
+        private void CourseCategoriesWindow_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Left) PrevPageButton_Click(sender, e);
             else if (e.Key == Key.Right) NextPageButton_Click(sender, e);
@@ -104,7 +104,7 @@ namespace Admin_Panel
 
         private void AddCategoryButton_Click(object sender, RoutedEventArgs e)
         {
-            var addCategoryWindow = new AddCategoryWindow();
+            var addCategoryWindow = new AddCourseCategoryWindow();
             if (addCategoryWindow.ShowDialog() == true)
             {
                 LoadCategories();
@@ -114,9 +114,9 @@ namespace Admin_Panel
 
         private void EditCategoryButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CategoriesDataGrid.SelectedItem is Category selectedCategory)
+            if (CourseCategoriesDataGrid.SelectedItem is Category selectedCategory)
             {
-                var editCategoryWindow = new EditCategoryWindow(selectedCategory);
+                var editCategoryWindow = new EditCourseCategoryWindow(selectedCategory);
                 if (editCategoryWindow.ShowDialog() == true)
                 {
                     LoadCategories();
@@ -131,14 +131,14 @@ namespace Admin_Panel
 
         private void DeleteCategoryButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CategoriesDataGrid.SelectedItem is Category selectedCategory)
+            if (CourseCategoriesDataGrid.SelectedItem is Category selectedCategory)
             {
-                bool result = CustomMessageBox.Show("Подтверждение", $"Вы уверены, что хотите удалить категорию {selectedCategory.CategoryName}?");
+                bool result = CustomMessageBox.Show("Подтверждение", $"Вы уверены, что хотите удалить категорию {selectedCategory.CategoryName}? Это удалит все связанные курсы.");
                 if (result)
                 {
                     try
                     {
-                        DatabaseHelper.DeleteCategory(selectedCategory.Id);
+                        DatabaseHelper.DeleteCourseCategory(selectedCategory.Id);
                         LoadCategories();
                     }
                     catch (Exception ex)
@@ -166,7 +166,7 @@ namespace Admin_Panel
                 int? idQuery = null;
                 if (int.TryParse(query, out int id)) idQuery = id;
 
-                var filteredCategories = DatabaseHelper.GetCategories()
+                var filteredCategories = DatabaseHelper.GetCourseCategories()
                     .Where(c =>
                         c.CategoryName.ToLower().Contains(query) ||
                         (idQuery.HasValue && c.Id == idQuery.Value)
@@ -175,7 +175,7 @@ namespace Admin_Panel
                 totalCategories = filteredCategories.Count;
                 var paginatedCategories = filteredCategories.Skip((currentPage - 1) * PageSize).Take(PageSize).ToList();
 
-                CategoriesDataGrid.ItemsSource = paginatedCategories;
+                CourseCategoriesDataGrid.ItemsSource = paginatedCategories;
                 UpdatePagination();
             }
             catch (Exception ex)
@@ -194,14 +194,14 @@ namespace Admin_Panel
             NavigationHelper.NavigateToUsersWindow(AdminId, this);
         }
 
+        private void CategoriesButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToCategoryWindow(AdminId, this);
+        }
+
         private void CoursesButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.NavigateToCourseWindow(AdminId, this);
-        }
-
-        private void CoursesCategoriesButton_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationHelper.NavigateToCourseCategoriesWindow(AdminId, this);
         }
 
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
@@ -223,11 +223,5 @@ namespace Admin_Panel
         {
             if (e.ChangedButton == MouseButton.Left) DragMove();
         }
-    }
-
-    public class Category
-    {
-        public int Id { get; set; }
-        public string CategoryName { get; set; }
     }
 }

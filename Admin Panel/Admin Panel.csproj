@@ -80,6 +80,12 @@
     <Compile Include="AddCategoryWindow.xaml.cs">
       <DependentUpon>AddCategoryWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddCourseCategoryWindow.xaml.cs">
+      <DependentUpon>AddCourseCategoryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddCourseWindow.xaml.cs">
+      <DependentUpon>AddCourseWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddUserWindow.xaml.cs">
       <DependentUpon>AddUserWindow.xaml</DependentUpon>
     </Compile>
@@ -87,8 +93,21 @@
     <Compile Include="CategoriesWindow.xaml.cs">
       <DependentUpon>CategoriesWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Course.cs" />
+    <Compile Include="CourseCategoriesWindow.xaml.cs">
+      <DependentUpon>CourseCategoriesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CoursesWindow.xaml.cs">
+      <DependentUpon>CoursesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EditCategoryWindow.xaml.cs">
       <DependentUpon>EditCategoryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditCourseCategoryWindow.xaml.cs">
+      <DependentUpon>EditCourseCategoryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditCourseWindow.xaml.cs">
+      <DependentUpon>EditCourseWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditUserWindow.xaml.cs">
       <DependentUpon>EditUserWindow.xaml</DependentUpon>
@@ -118,6 +137,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="AddCourseCategoryWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddCourseWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddUserWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -126,7 +153,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CourseCategoriesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CoursesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="EditCategoryWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditCourseCategoryWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditCourseWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

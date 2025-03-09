@@ -4,12 +4,14 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Admin_Panel.Helpers
 {
     public static class DatabaseHelper
     {
-        private const string ConnectionString = "Server=WIN-6OQEGBE24R9\\SQLEXPRESS;Database=Finances;Trusted_Connection=True;";
+        private const string ConnectionString = "Server=WIN-6OQEGBE24R9\\SQLEXPRESS;Database=Finances2;Trusted_Connection=True;";
 
 
         /// Получает количество пользователей
@@ -45,21 +47,25 @@ namespace Admin_Panel.Helpers
         }
 
 
-        public static decimal GetTotalBalance()
+        public static int GetActiveSubscribersCount()
         {
-            decimal totalBalance = 0;
+            int activeSubscribers = 0;
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
-                string query = "SELECT SUM(current_balance) FROM users;"; 
+                string query = @"
+            SELECT COUNT(DISTINCT user_id) 
+            FROM paid_subscribers 
+            WHERE GETDATE() BETWEEN subscription_start_date AND subscription_end_date";
+
                 SqlCommand command = new SqlCommand(query, connection);
                 object result = command.ExecuteScalar();
                 if (result != DBNull.Value && result != null)
                 {
-                    totalBalance = Convert.ToDecimal(result);
+                    activeSubscribers = Convert.ToInt32(result);
                 }
             }
-            return totalBalance;
+            return activeSubscribers;
         }
 
 
@@ -188,32 +194,40 @@ namespace Admin_Panel.Helpers
         public static List<User> GetUsers()
         {
             List<User> users = new List<User>();
-            string query = "SELECT id, username, email, current_balance, created_at, password_hash FROM users";
 
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            try
             {
-                SqlCommand command = new SqlCommand(query, connection);
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                using (var connection = new SqlConnection(ConnectionString))
                 {
-                    users.Add(new User
+                    connection.Open();
+                    using (var command = new SqlCommand("SELECT id, username, email, password_hash, current_balance, created_at, last_login FROM Users", connection))
+                    using (var reader = command.ExecuteReader())
                     {
-                        Id = reader.GetInt32(0),
-                        Username = reader.GetString(1),
-                        Email = reader.GetString(2),
-                        CurrentBalance = reader.GetDecimal(3),
-                        CreatedAt = reader.GetDateTime(4),
-                        PasswordHash = reader.GetString(5)
-                    });
+                        while (reader.Read())
+                        {
+                            users.Add(new User
+                            {
+                                Id = reader.GetInt32(0),
+                                Username = reader.GetString(1),
+                                Email = reader.GetString(2),
+                                PasswordHash = reader.GetString(3),
+                                CurrentBalance = reader.IsDBNull(4) ? 0m : reader.GetDecimal(4),
+                                CreatedAt = reader.IsDBNull(5) ? DateTime.MinValue : reader.GetDateTime(5),
+                                LastLogin = reader.IsDBNull(6) ? DateTime.MinValue : reader.GetDateTime(6)
+                            });
+                        }
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке пользователей: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             return users;
         }
 
-        
+
 
 
 
@@ -347,7 +361,8 @@ namespace Admin_Panel.Helpers
                     DELETE FROM instant_expenses WHERE user_id = @id;
                     DELETE FROM financial_operations WHERE user_id = @id;
                     DELETE FROM user_sessions WHERE user_id = @id;
-                    DELETE FROM user_values WHERE user_id = @id;
+                    DELETE FROM user_currencies WHERE user_id = @id;
+                    DELETE FROM paid_subscribers WHERE user_id = @id;
                     DELETE FROM users WHERE id = @id;";
 
                         using (var command = new SqlCommand(query, connection, transaction))
@@ -356,12 +371,12 @@ namespace Admin_Panel.Helpers
                             command.ExecuteNonQuery();
                         }
 
-                        transaction.Commit(); 
+                        transaction.Commit();
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        transaction.Rollback(); 
-                        throw; 
+                        transaction.Rollback();
+                        throw new Exception("Ошибка при удалении пользователя: " + ex.Message, ex);
                     }
                 }
             }
@@ -635,6 +650,185 @@ namespace Admin_Panel.Helpers
                         command.Parameters.AddWithValue("@Id", excludeId);
 
                     return (int)command.ExecuteScalar() > 0;
+                }
+            }
+        }
+
+        public static List<Course> GetCoursesWithCategories()
+        {
+            List<Course> courses = new List<Course>();
+            string query = @"
+        SELECT c.id, c.course_name, c.description, c.video_url, c.category_id, c.is_paid, cc.category_name
+        FROM courses c
+        JOIN course_categories cc ON c.category_id = cc.id";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    courses.Add(new Course
+                    {
+                        Id = reader.GetInt32(0),
+                        CourseName = reader.GetString(1),
+                        Description = reader.IsDBNull(2) ? null : reader.GetString(2),
+                        VideoUrl = reader.IsDBNull(3) ? null : reader.GetString(3),
+                        CategoryId = reader.GetInt32(4),
+                        IsPaid = reader.GetBoolean(5),
+                        CategoryName = reader.GetString(6)
+                    });
+                }
+            }
+
+            return courses;
+        }
+
+        public static List<Category> GetCourseCategories()
+        {
+            List<Category> categories = new List<Category>();
+            string query = "SELECT id, category_name FROM course_categories";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    categories.Add(new Category
+                    {
+                        Id = reader.GetInt32(0),
+                        CategoryName = reader.GetString(1)
+                    });
+                }
+            }
+
+            return categories;
+        }
+
+        public static void AddCourse(string courseName, string description, string videoUrl, int categoryId, bool isPaid)
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "INSERT INTO courses (course_name, description, video_url, category_id, is_paid) " +
+                               "VALUES (@CourseName, @Description, @VideoUrl, @CategoryId, @IsPaid)";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CourseName", courseName);
+                    command.Parameters.AddWithValue("@Description", (object)description ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@VideoUrl", (object)videoUrl ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@CategoryId", categoryId);
+                    command.Parameters.AddWithValue("@IsPaid", isPaid);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void UpdateCourse(Course course)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "UPDATE courses SET course_name = @CourseName, description = @Description, " +
+                               "video_url = @VideoUrl, category_id = @CategoryId, is_paid = @IsPaid WHERE id = @Id";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CourseName", course.CourseName);
+                    command.Parameters.AddWithValue("@Description", (object)course.Description ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@VideoUrl", (object)course.VideoUrl ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@CategoryId", course.CategoryId);
+                    command.Parameters.AddWithValue("@IsPaid", course.IsPaid);
+                    command.Parameters.AddWithValue("@Id", course.Id);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void DeleteCourse(int courseId)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "DELETE FROM courses WHERE id = @Id";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", courseId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        public static bool CourseCategoryExists(string categoryName, int excludeId = -1)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = excludeId == -1
+                    ? "SELECT COUNT(*) FROM course_categories WHERE category_name = @CategoryName"
+                    : "SELECT COUNT(*) FROM course_categories WHERE category_name = @CategoryName AND id != @Id";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CategoryName", categoryName);
+                    if (excludeId != -1)
+                        command.Parameters.AddWithValue("@Id", excludeId);
+
+                    return (int)command.ExecuteScalar() > 0;
+                }
+            }
+        }
+
+        public static void AddCourseCategory(string categoryName)
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "INSERT INTO course_categories (category_name) VALUES (@CategoryName)";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CategoryName", categoryName);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void UpdateCourseCategory(Category category)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "UPDATE course_categories SET category_name = @CategoryName WHERE id = @Id";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CategoryName", category.CategoryName);
+                    command.Parameters.AddWithValue("@Id", category.Id);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void DeleteCourseCategory(int categoryId)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                string query = "DELETE FROM course_categories WHERE id = @Id";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", categoryId);
+                    command.ExecuteNonQuery();
                 }
             }
         }

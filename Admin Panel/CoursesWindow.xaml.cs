@@ -9,19 +9,19 @@ using Admin_Panel.User_Controls;
 
 namespace Admin_Panel
 {
-    public partial class CategoriesWindow : Window
+    public partial class CoursesWindow : Window
     {
         private int AdminId;
         private int currentPage = 1;
         private const int PageSize = 12;
-        private int totalCategories;
+        private int totalCourses;
 
-        public CategoriesWindow(int adminId)
+        public CoursesWindow(int adminId)
         {
             InitializeComponent();
             AdminId = adminId;
             LoadData();
-            LoadCategories();
+            LoadCourses();
         }
 
         private void LoadData()
@@ -35,7 +35,7 @@ namespace Admin_Panel
                 AdminGreetingTextBlock.Text = $"{timeOfDayGreeting}, {adminName}";
                 UsernameTextBlock.Text = adminName;
                 InitialsTextBlock.Text = initials;
-                this.KeyDown += CategoriesWindow_KeyDown;
+                this.KeyDown += CoursesWindow_KeyDown;
             }
             catch (Exception ex)
             {
@@ -52,30 +52,30 @@ namespace Admin_Panel
             else return "Good Night";
         }
 
-        private void LoadCategories()
+        private void LoadCourses()
         {
             try
             {
-                var categories = DatabaseHelper.GetCategories();
-                totalCategories = categories.Count;
-                var paginatedCategories = categories.Skip((currentPage - 1) * PageSize).Take(PageSize).ToList();
+                var courses = DatabaseHelper.GetCoursesWithCategories();
+                totalCourses = courses.Count;
+                var paginatedCourses = courses.Skip((currentPage - 1) * PageSize).Take(PageSize).ToList();
 
-                CategoriesDataGrid.ItemsSource = null;
-                CategoriesDataGrid.Items.Clear();
-                CategoriesDataGrid.ItemsSource = paginatedCategories;
+                CoursesDataGrid.ItemsSource = null;
+                CoursesDataGrid.Items.Clear();
+                CoursesDataGrid.ItemsSource = paginatedCourses;
                 UpdatePagination();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка загрузки категорий: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка загрузки курсов: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void UpdatePagination()
         {
-            TotalPagesTextBlock.Text = $"{currentPage} из {Math.Max(1, (int)Math.Ceiling((double)totalCategories / PageSize))}";
+            TotalPagesTextBlock.Text = $"{currentPage} из {Math.Max(1, (int)Math.Ceiling((double)totalCourses / PageSize))}";
             PrevPageButton.IsEnabled = currentPage > 1;
-            NextPageButton.IsEnabled = currentPage < (int)Math.Ceiling((double)totalCategories / PageSize);
+            NextPageButton.IsEnabled = currentPage < (int)Math.Ceiling((double)totalCourses / PageSize);
         }
 
         private void PrevPageButton_Click(object sender, RoutedEventArgs e)
@@ -83,63 +83,63 @@ namespace Admin_Panel
             if (currentPage > 1)
             {
                 currentPage--;
-                LoadCategories();
+                LoadCourses();
             }
         }
 
         private void NextPageButton_Click(object sender, RoutedEventArgs e)
         {
-            if (currentPage < (int)Math.Ceiling((double)totalCategories / PageSize))
+            if (currentPage < (int)Math.Ceiling((double)totalCourses / PageSize))
             {
                 currentPage++;
-                LoadCategories();
+                LoadCourses();
             }
         }
 
-        private void CategoriesWindow_KeyDown(object sender, KeyEventArgs e)
+        private void CoursesWindow_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Left) PrevPageButton_Click(sender, e);
             else if (e.Key == Key.Right) NextPageButton_Click(sender, e);
         }
 
-        private void AddCategoryButton_Click(object sender, RoutedEventArgs e)
+        private void AddCourseButton_Click(object sender, RoutedEventArgs e)
         {
-            var addCategoryWindow = new AddCategoryWindow();
-            if (addCategoryWindow.ShowDialog() == true)
+            var addCourseWindow = new AddCourseWindow();
+            if (addCourseWindow.ShowDialog() == true)
             {
-                LoadCategories();
-                CustomMessageBox.Show("Успех", "Категория успешно добавлена.", isConfirmation: false);
+                LoadCourses();
+                CustomMessageBox.Show("Успех", "Курс успешно добавлен.", isConfirmation: false);
             }
         }
 
-        private void EditCategoryButton_Click(object sender, RoutedEventArgs e)
+        private void EditCourseButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CategoriesDataGrid.SelectedItem is Category selectedCategory)
+            if (CoursesDataGrid.SelectedItem is Course selectedCourse)
             {
-                var editCategoryWindow = new EditCategoryWindow(selectedCategory);
-                if (editCategoryWindow.ShowDialog() == true)
+                var editCourseWindow = new EditCourseWindow(selectedCourse);
+                if (editCourseWindow.ShowDialog() == true)
                 {
-                    LoadCategories();
-                    CustomMessageBox.Show("Успех", "Категория успешно обновлена.", isConfirmation: false);
+                    LoadCourses();
+                    CustomMessageBox.Show("Успех", "Курс успешно обновлён.", isConfirmation: false);
                 }
             }
             else
             {
-                CustomMessageBox.Show("Внимание", "Выберите категорию для редактирования.", isConfirmation: false);
+                CustomMessageBox.Show("Внимание", "Выберите курс для редактирования.", isConfirmation: false);
             }
         }
 
-        private void DeleteCategoryButton_Click(object sender, RoutedEventArgs e)
+        private void DeleteCourseButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CategoriesDataGrid.SelectedItem is Category selectedCategory)
+            if (CoursesDataGrid.SelectedItem is Course selectedCourse)
             {
-                bool result = CustomMessageBox.Show("Подтверждение", $"Вы уверены, что хотите удалить категорию {selectedCategory.CategoryName}?");
+                bool result = CustomMessageBox.Show("Подтверждение", $"Вы уверены, что хотите удалить курс {selectedCourse.CourseName}?");
                 if (result)
                 {
                     try
                     {
-                        DatabaseHelper.DeleteCategory(selectedCategory.Id);
-                        LoadCategories();
+                        DatabaseHelper.DeleteCourse(selectedCourse.Id);
+                        LoadCourses();
                     }
                     catch (Exception ex)
                     {
@@ -149,7 +149,7 @@ namespace Admin_Panel
             }
             else
             {
-                CustomMessageBox.Show("Внимание", "Выберите категорию для удаления.", isConfirmation: false);
+                CustomMessageBox.Show("Внимание", "Выберите курс для удаления.", isConfirmation: false);
             }
         }
 
@@ -166,16 +166,17 @@ namespace Admin_Panel
                 int? idQuery = null;
                 if (int.TryParse(query, out int id)) idQuery = id;
 
-                var filteredCategories = DatabaseHelper.GetCategories()
+                var filteredCourses = DatabaseHelper.GetCoursesWithCategories()
                     .Where(c =>
+                        c.CourseName.ToLower().Contains(query) ||
                         c.CategoryName.ToLower().Contains(query) ||
                         (idQuery.HasValue && c.Id == idQuery.Value)
                     ).ToList();
 
-                totalCategories = filteredCategories.Count;
-                var paginatedCategories = filteredCategories.Skip((currentPage - 1) * PageSize).Take(PageSize).ToList();
+                totalCourses = filteredCourses.Count;
+                var paginatedCourses = filteredCourses.Skip((currentPage - 1) * PageSize).Take(PageSize).ToList();
 
-                CategoriesDataGrid.ItemsSource = paginatedCategories;
+                CoursesDataGrid.ItemsSource = paginatedCourses;
                 UpdatePagination();
             }
             catch (Exception ex)
@@ -189,24 +190,24 @@ namespace Admin_Panel
             NavigationHelper.NavigateToMainWindow(AdminId, this);
         }
 
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.Logout();
+        }
+
         private void UsersButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.NavigateToUsersWindow(AdminId, this);
         }
 
-        private void CoursesButton_Click(object sender, RoutedEventArgs e)
+        private void CategoriesButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationHelper.NavigateToCourseWindow(AdminId, this);
+            NavigationHelper.NavigateToCategoryWindow(AdminId, this);
         }
 
         private void CoursesCategoriesButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.NavigateToCourseCategoriesWindow(AdminId, this);
-        }
-
-        private void LogoutButton_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationHelper.Logout();
         }
 
         private void SettingButton_Click(object sender, RoutedEventArgs e)
@@ -223,11 +224,5 @@ namespace Admin_Panel
         {
             if (e.ChangedButton == MouseButton.Left) DragMove();
         }
-    }
-
-    public class Category
-    {
-        public int Id { get; set; }
-        public string CategoryName { get; set; }
     }
 }

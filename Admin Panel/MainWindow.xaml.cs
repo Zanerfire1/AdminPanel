@@ -44,7 +44,7 @@ namespace Admin_Panel
             {
                 TotalUsersCard.Number = DatabaseHelper.GetTotalUsers().ToString();
 
-                TotalOrdersCard.Number = DatabaseHelper.GetTotalBalance().ToString("N2");
+                TotalSubscribersCard.Number = DatabaseHelper.GetActiveSubscribersCount().ToString();
 
                 NewUsersCard.Number = DatabaseHelper.GetNewUsersLastDay().ToString();
 
@@ -152,6 +152,18 @@ namespace Admin_Panel
         {
             NavigationHelper.NavigateToCategoryWindow(AdminId, this);
         }
+
+          private void CoursesButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToCourseWindow(AdminId, this);
+        }
+
+        private void CoursesCategoriesButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToCourseCategoriesWindow(AdminId, this);
+        }
+
+
 
         private void SettingButton_Click(object sender, RoutedEventArgs e)
         {

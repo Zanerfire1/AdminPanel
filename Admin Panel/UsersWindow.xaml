@@ -73,6 +73,21 @@
                     </StackPanel>
                 </Button>
 
+
+                <Button Click="CoursesButton_Click" Style="{StaticResource menuButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:IconImage Icon="Book" Style="{StaticResource menuButtonIcon}"/>
+                        <TextBlock Text="Courses" Style="{StaticResource menuButtonText}"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Click="CoursesCategoriesButton_Click" Style="{StaticResource menuButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:IconImage Icon="Table" Style="{StaticResource menuButtonIcon}"/>
+                        <TextBlock Text="Course Categories" Style="{StaticResource menuButtonText}"/>
+                    </StackPanel>
+                </Button>
+
                 <Button Click="SettingButton_Click" Style="{StaticResource menuButton}">
                     <StackPanel Orientation="Horizontal">
                         <fa:IconImage Icon="Cog" Style="{StaticResource menuButtonIcon}"/>
@@ -343,7 +358,6 @@
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
                             <DataGridTextColumn Header="Имя пользователя" Binding="{Binding Username}" Width="*"/>
                             <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
-                            <DataGridTextColumn Header="Баланс" Binding="{Binding CurrentBalance}" Width="150"/>
                             <DataGridTextColumn Header="Дата создания" Binding="{Binding CreatedAt}" Width="150"/>
                         </DataGrid.Columns>
                     </DataGrid>

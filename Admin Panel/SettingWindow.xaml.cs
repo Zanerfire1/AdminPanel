@@ -77,6 +77,16 @@ namespace Admin_Panel
             NavigationHelper.NavigateToCategoryWindow(_admin.Id, this);
         }
 
+        private void CoursesButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToCourseWindow(_admin.Id, this);
+        }
+
+        private void CoursesCategoriesButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToCourseCategoriesWindow(_admin.Id, this);
+        }
+
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.Logout();

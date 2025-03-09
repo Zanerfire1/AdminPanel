@@ -71,6 +71,22 @@
                     </StackPanel>
                 </Button>
 
+
+                <Button Click="CoursesButton_Click" Style="{StaticResource menuButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:IconImage Icon="Book" Style="{StaticResource menuButtonIcon}"/>
+                        <TextBlock Text="Courses" Style="{StaticResource menuButtonText}"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Click="CoursesCategoriesButton_Click" Style="{StaticResource menuButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:IconImage Icon="Table" Style="{StaticResource menuButtonIcon}"/>
+                        <TextBlock Text="Course Categories" Style="{StaticResource menuButtonText}"/>
+                    </StackPanel>
+                </Button>
+
+
                 <Button Style="{StaticResource menuButtonActive}">
                     <StackPanel Orientation="Horizontal">
                         <fa:IconImage Icon="Cog" Style="{StaticResource menuButtonIcon}"/>

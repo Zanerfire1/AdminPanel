@@ -58,5 +58,19 @@ namespace Admin_Panel.Helpers
             categoryWindow.Show();
             currentWindow.Close();
         }
+
+        public static void NavigateToCourseWindow(int adminId, Window currentWindow)
+        {
+            CoursesWindow coursesWindow = new CoursesWindow(adminId);
+            coursesWindow.Show();
+            currentWindow.Close();
+        }
+
+        public static void NavigateToCourseCategoriesWindow(int adminId, Window currentWindow)
+        {
+            CourseCategoriesWindow courseCategoriesWindow = new CourseCategoriesWindow(adminId);
+            courseCategoriesWindow.Show();
+            currentWindow.Close();
+        }
     }
 }

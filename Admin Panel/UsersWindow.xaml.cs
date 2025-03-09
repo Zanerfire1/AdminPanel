@@ -243,13 +243,20 @@ namespace Admin_Panel
             NavigationHelper.Logout();
         }
 
+        private void CoursesButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToCourseWindow(AdminId, this);
+        }
+
+        private void CoursesCategoriesButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.NavigateToCourseCategoriesWindow(AdminId, this);
+        }
+
         private void SettingButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.NavigateToSettingWindow(AdminId, this);
         }
-
-
-
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {

@@ -1,0 +1,128 @@
+﻿<Window x:Class="Admin_Panel.EditCourseWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Редактировать курс" Width="400" Height="600"
+        WindowStyle="None" Background="Transparent" AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen">
+    <Border Background="#2C386C" CornerRadius="10">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Редактировать курс" Foreground="White" FontSize="24" FontWeight="Bold"
+                       HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+            <StackPanel Grid.Row="1" Margin="0,10">
+                <TextBlock Text="Название курса" Foreground="White" FontSize="16"/>
+                <Border Background="White" CornerRadius="5" Padding="2" Margin="0,5">
+                    <TextBox x:Name="CourseNameTextBox" Width="360" Height="35" Background="Transparent" BorderThickness="0"/>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Margin="0,10">
+                <TextBlock Text="Описание" Foreground="White" FontSize="16"/>
+                <Grid>
+                    <Border Background="White" CornerRadius="5" Padding="2" Margin="0,5">
+                        <TextBox x:Name="DescriptionTextBox" Width="360" Height="100" Background="Transparent" BorderThickness="0" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+                    </Border>
+                    <Button x:Name="BoldButton" Content="Ж" Width="25" Height="25" Margin="335,-75,0,0" Background="#495385" Foreground="White"
+                FontSize="12" FontWeight="Bold" BorderThickness="0" Cursor="Hand" Click="BoldButton_Click" ToolTip="Выделить жирным">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="3">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Border" Property="Background" Value="#5A6699"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter TargetName="Border" Property="Background" Value="#49527D"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Margin="0,10">
+                <TextBlock Text="Категория" Foreground="White" FontSize="16"/>
+                <Border Background="White" CornerRadius="5" Padding="2" Margin="0,5">
+                    <ComboBox x:Name="CategoryComboBox" Width="360" Height="35" DisplayMemberPath="CategoryName"/>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Grid.Row="4" Margin="0,10">
+                <CheckBox x:Name="IsPaidCheckBox" Content="Для подписчиков" Foreground="White" FontSize="16" Checked="IsPaidCheckBox_Checked" Unchecked="IsPaidCheckBox_Unchecked"/>
+                <Border x:Name="VideoUrlBorder" Background="White" CornerRadius="5" Padding="2" Margin="0,5" Visibility="Collapsed">
+                    <TextBox x:Name="VideoUrlTextBox" Width="360" Height="35" Background="Transparent" BorderThickness="0"/>
+                </Border>
+                <TextBlock Name="ErrorTextBlock" Text="" Foreground="Red" FontSize="12" Visibility="Collapsed" TextAlignment="Center" Margin="0,5,0,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                <Button Content="Сохранить" Width="150" Height="40" Margin="0,0,10,0" Background="#495385" Foreground="White"
+                        FontSize="14" FontWeight="Bold" BorderThickness="0" Cursor="Hand" Click="SaveCourseButton_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="5">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Border" Property="Background" Value="#5A6699"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter TargetName="Border" Property="Background" Value="#49527D"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Content="Отмена" Width="150" Height="40" Background="#495385" Foreground="White"
+                        FontSize="14" FontWeight="Bold" BorderThickness="0" Cursor="Hand" Click="CancelButton_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="5">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Border" Property="Background" Value="#5A6699"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter TargetName="Border" Property="Background" Value="#49527D"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>
