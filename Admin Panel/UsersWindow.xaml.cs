@@ -124,7 +124,7 @@ namespace Admin_Panel
         }
 
 
-        // Добавление пользователя
+
         private void AddUserButton_Click(object sender, RoutedEventArgs e)
         {
             var addUserWindow = new AddUserWindow();
@@ -136,7 +136,6 @@ namespace Admin_Panel
         }
 
 
-        // Редактирование пользователя
         private void EditUserButton_Click(object sender, RoutedEventArgs e)
         {
             if (UsersDataGrid.SelectedItem is User selectedUser)
@@ -183,7 +182,7 @@ namespace Admin_Panel
 
 
 
-        // Поиск и фильтрация
+
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             ApplyFilter();
@@ -195,7 +194,7 @@ namespace Admin_Panel
             {
                 var query = SearchTextBox.Text.Trim().ToLower();
 
-                // Преобразуем запрос в число для поиска по Id, если это возможно
+
                 int? idQuery = null;
                 if (int.TryParse(query, out int id))
                 {
@@ -206,18 +205,17 @@ namespace Admin_Panel
                     .Where(u =>
                         (u.Username.ToLower().Contains(query) ||
                         u.Email.ToLower().Contains(query) ||
-                        (idQuery.HasValue && u.Id == idQuery.Value)) // Фильтрация по Id
+                        (idQuery.HasValue && u.Id == idQuery.Value)) 
                     ).ToList();
 
                 totalUsers = filteredUsers.Count;
 
-                // Пагинация
+
                 var paginatedUsers = filteredUsers.Skip((currentPage - 1) * PageSize).Take(PageSize).ToList();
 
-                // Обновление источника данных в таблице
+
                 UsersDataGrid.ItemsSource = paginatedUsers;
 
-                // Обновление пагинации
                 UpdatePagination();
             }
             catch (Exception ex)

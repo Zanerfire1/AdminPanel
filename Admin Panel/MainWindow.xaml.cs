@@ -85,7 +85,6 @@ namespace Admin_Panel
             {
                 Dictionary<string, int> newUsersData = DatabaseHelper.GetNewUsersPerDay();
 
-                // Заполняем массив дат (если какой-то день отсутствует, добавляем 0)
                 List<string> labels = new List<string>();
                 List<int> values = new List<int>();
 
@@ -96,7 +95,7 @@ namespace Admin_Panel
                     values.Add(newUsersData.ContainsKey(date) ? newUsersData[date] : 0);
                 }
 
-                // Привязываем данные к графику
+
                 NewUsersChart.AxisX[0].Labels = labels;
                 NewUsersChart.Series = new SeriesCollection
         {
@@ -163,14 +162,10 @@ namespace Admin_Panel
             NavigationHelper.NavigateToCourseCategoriesWindow(AdminId, this);
         }
 
-
-
         private void SettingButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.NavigateToSettingWindow(AdminId, this);
         }
-
-
 
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
